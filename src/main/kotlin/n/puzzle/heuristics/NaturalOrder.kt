@@ -8,14 +8,35 @@ import kotlin.collections.HashMap
 @ExperimentalUnsignedTypes
 class NaturalOrder(size: Int) {
 
-    val indexMap: Map<Int, Coord>
+    private val indexMap: Map<UInt, Coord>
     val state: State
-
 
     init {
         val state = State(UIntArray(size * size), size)
-        val indexMap = HashMap<Int, Coord>()
+        val indexMap = HashMap<UInt, Coord>()
 
+        var offsetX = -1
+        var offsetY = 0
+        var idx = 1u
+        (size downTo 0).forEach {len ->
+            val move = if ((size - len) % 2 == 0) 1 else -1
+            if (len != size) {
+                repeat(len) {
+                    offsetY -= move
+                    state[offsetX, offsetY] = idx
+                    indexMap[idx] = Coord(offsetX, offsetY)
+                    idx += 1u
+                }
+            }
+            if (len != 1) {
+                repeat(len) {
+                    offsetX += move
+                    state[offsetX, offsetY] = idx
+                    indexMap[idx] = Coord(offsetX, offsetY)
+                    idx += 1u
+                }
+            }
+        }
         state.recalculateZero()
         this.state = state
         this.indexMap = indexMap
@@ -24,18 +45,19 @@ class NaturalOrder(size: Int) {
     companion object {
         private val map = Collections.synchronizedMap(HashMap<Int, NaturalOrder>())
 
+        @Synchronized
         operator fun get(size: Int): NaturalOrder {
            return map.getOrPut(size) { NaturalOrder(size) }
         }
     }
 
-    fun getNaturalIndex(value: Int): Coord? {
+    fun getNaturalIndex(value: UInt): Coord? {
         return indexMap[value]
     }
 
 }
 
 @ExperimentalUnsignedTypes
-fun State.getNaturalIndex(value: Int): Coord? {
+fun State.getNaturalIndex(value: UInt): Coord? {
     return NaturalOrder[size].getNaturalIndex(value)
 }
