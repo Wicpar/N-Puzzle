@@ -3,6 +3,10 @@ package n.puzzle.state
 @ExperimentalUnsignedTypes
 data class State(private val data: UIntArray, val size: UInt, val coord: Coord) {
 
+    constructor(data: UIntArray, size: UInt): this(data, size, data.indexOf(0u).let {
+        Coord((it % size.toInt()).toUInt(), (it / size.toInt()).toUInt())
+    })
+
     operator fun get(x: UInt, y: UInt): UInt {
         return data[(x + y * size).toInt()]
     }

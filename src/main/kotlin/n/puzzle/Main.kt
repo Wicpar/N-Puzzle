@@ -9,12 +9,11 @@ fun File.checkFileFormat(): String {
 
     val lines = this.readLines().filter { it.startsWith("#") }.map { it.split("#")[0] }.toMutableList()
     val size = lines.removeFirst().toUIntOrNull() ?: return "Invalid File: Error Invalid N-Puzzle size: Not An UInt"
-
-
-    for (line in lines) {
-        if (line.split(" ").any { it.toUIntOrNull() == null })
-            return "Invalid File: Error Invalid Element in N-Puzzle"
-    }
+    val array = lines.flatMap {
+        it.split(" ").map {
+            it.toUIntOrNull() ?: return "Invalid File: Error Invalid Element $it in N-Puzzle"
+        }
+    }.toUIntArray()
 
 
 
