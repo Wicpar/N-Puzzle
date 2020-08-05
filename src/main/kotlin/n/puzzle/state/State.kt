@@ -1,7 +1,7 @@
 package n.puzzle.state
 
 @ExperimentalUnsignedTypes
-data class State(private val data: UIntArray, val size: UInt, val coord: Coord) {
+class State(private val data: UIntArray, val size: UInt, val zero: Coord) {
 
     constructor(data: UIntArray, size: UInt): this(data, size, data.indexOf(0u).let {
         Coord((it % size.toInt()).toUInt(), (it / size.toInt()).toUInt())
@@ -25,21 +25,21 @@ data class State(private val data: UIntArray, val size: UInt, val coord: Coord) 
 
     operator fun plus(next: Coord): Pair<State, Coord> {
         val new = State(data, size, next)
-        new[coord] = this[next]
+        new[zero] = this[next]
         new[next] = 0u
-        return Pair(new, coord)
+        return Pair(new, zero)
     }
 
     fun neighbors(): List<Coord> {
         val lst = mutableListOf<Coord>()
-        if (coord.x < size - 1u)
-            lst += Coord(coord.x + 1u, coord.y)
-        if (coord.y < size - 1u)
-            lst += Coord(coord.x, coord.y + 1u)
-        if (coord.x > 0u)
-            lst += Coord(coord.x - 1u, coord.y)
-        if (coord.y > 0u)
-            lst += Coord(coord.x, coord.y - 1u)
+        if (zero.x < size - 1u)
+            lst += Coord(zero.x + 1u, zero.y)
+        if (zero.y < size - 1u)
+            lst += Coord(zero.x, zero.y + 1u)
+        if (zero.x > 0u)
+            lst += Coord(zero.x - 1u, zero.y)
+        if (zero.y > 0u)
+            lst += Coord(zero.x, zero.y - 1u)
         return lst
     }
 
@@ -65,7 +65,7 @@ data class State(private val data: UIntArray, val size: UInt, val coord: Coord) 
     override fun toString(): String {
         val values = data.map { it.toString() }
         val len = values.map { it.length }.max() ?: 0
-        return values.windowed(size.toInt(), size.toInt()).map { it.joinToString(" ") { it.padStart(len, ' ') } }.joinToString("\n")
+        return values.windowed(size.toInt(), size.toInt()).joinToString("\n") { it.joinToString(" ") { it.padStart(len, ' ') } }
     }
 
 }
