@@ -1,12 +1,23 @@
 package n.puzzle.state
 
-@ExperimentalUnsignedTypes
-class State(private val data: UIntArray, val size: Int, private var zero: Coord ) {
+import n.puzzle.heuristics.NaturalOrder
 
-    constructor(data: UIntArray, size: Int): this(data, size, data.indexOf(0u).let { Coord(it % size, it / size) })
+@ExperimentalUnsignedTypes
+class State(private val data: UIntArray, val size: Int, private var _zero: Coord) {
+
+    private var dirty = false
+
+    constructor(data: UIntArray, size: Int) : this(data, size, data.indexOf(0u).let { Coord(it % size, it / size) })
+
+    val zero: Coord
+        get() {
+            if (dirty) { recalculateZero() }
+            return _zero
+        }
 
     fun recalculateZero() {
-        zero = data.indexOf(0u).let { Coord(it % size, it / size) }
+        _zero = data.indexOf(0u).let { Coord(it % size, it / size) }
+        dirty = false
     }
 
     operator fun get(x: Int, y: Int): UInt {
@@ -14,26 +25,29 @@ class State(private val data: UIntArray, val size: Int, private var zero: Coord 
     }
 
     operator fun get(coord: Coord): UInt {
-        return data[coord.x + coord.y * size]
+        return this[coord.x, coord.y]
     }
 
     operator fun set(x: Int, y: Int, value: UInt) {
         data[x + y * size] = value
+        dirty = true
     }
 
     operator fun set(coord: Coord, value: UInt) {
-        data[coord.x + coord.y * size] = value
+        this[coord.x, coord.y] = value
     }
 
     operator fun plus(next: Coord): Pair<State, Coord> {
         val new = State(data, size, next)
-        new[zero] = this[next]
+        new[_zero] = this[next]
         new[next] = 0u
-        return Pair(new, zero)
+        new.dirty = false
+        return Pair(new, _zero)
     }
 
     fun neighbors(): List<Coord> {
         val lst = mutableListOf<Coord>()
+        val zero = zero
         if (zero.x < size - 1)
             lst += Coord(zero.x + 1, zero.y)
         if (zero.y < size - 1)
@@ -45,8 +59,12 @@ class State(private val data: UIntArray, val size: Int, private var zero: Coord 
         return lst
     }
 
-    inline fun <R : Comparable<R>> bestCoord(fn: State.(pos: Coord, value: UInt) -> R): Coord {
-        return neighbors().minBy { fn(it, this[it]) }!! // 0 grids are impossible
+    inline fun <R : Comparable<R>> bestCoord(fn: State.(pos: Coord, target: Coord, value: UInt) -> R): Coord {
+        val natural = NaturalOrder[size]
+        return neighbors().minBy {
+            val value = this[it]
+            fn(it, natural.getNaturalIndex(value)!!, value)
+        }!! // 0 grids are impossible
     }
 
     override fun equals(other: Any?): Boolean {

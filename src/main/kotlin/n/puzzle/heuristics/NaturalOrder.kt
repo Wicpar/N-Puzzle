@@ -56,8 +56,3 @@ class NaturalOrder(size: Int) {
     }
 
 }
-
-@ExperimentalUnsignedTypes
-fun State.getNaturalIndex(value: UInt): Coord? {
-    return NaturalOrder[size].getNaturalIndex(value)
-}
