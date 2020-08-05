@@ -7,5 +7,5 @@ import n.puzzle.state.State
 
 @ExperimentalUnsignedTypes
 fun State.manhattan(pos: Coord, value: UInt): Double {
-    size
+    return 0.0
 }

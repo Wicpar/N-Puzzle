@@ -1,26 +1,28 @@
 package n.puzzle.state
 
 @ExperimentalUnsignedTypes
-class State(private val data: UIntArray, val size: UInt, val zero: Coord) {
+class State(private val data: UIntArray, val size: Int, private var zero: Coord ) {
 
-    constructor(data: UIntArray, size: UInt): this(data, size, data.indexOf(0u).let {
-        Coord((it % size.toInt()).toUInt(), (it / size.toInt()).toUInt())
-    })
+    constructor(data: UIntArray, size: Int): this(data, size, data.indexOf(0u).let { Coord(it % size, it / size) })
 
-    operator fun get(x: UInt, y: UInt): UInt {
-        return data[(x + y * size).toInt()]
+    fun recalculateZero() {
+        zero = data.indexOf(0u).let { Coord(it % size, it / size) }
+    }
+
+    operator fun get(x: Int, y: Int): UInt {
+        return data[x + y * size]
     }
 
     operator fun get(coord: Coord): UInt {
-        return data[(coord.x + coord.y * size).toInt()]
+        return data[coord.x + coord.y * size]
     }
 
-    operator fun set(x: UInt, y: UInt, value: UInt) {
-        data[(x + y * size).toInt()] = value
+    operator fun set(x: Int, y: Int, value: UInt) {
+        data[x + y * size] = value
     }
 
     operator fun set(coord: Coord, value: UInt) {
-        data[(coord.x + coord.y * size).toInt()] = value
+        data[coord.x + coord.y * size] = value
     }
 
     operator fun plus(next: Coord): Pair<State, Coord> {
@@ -32,14 +34,14 @@ class State(private val data: UIntArray, val size: UInt, val zero: Coord) {
 
     fun neighbors(): List<Coord> {
         val lst = mutableListOf<Coord>()
-        if (zero.x < size - 1u)
-            lst += Coord(zero.x + 1u, zero.y)
-        if (zero.y < size - 1u)
-            lst += Coord(zero.x, zero.y + 1u)
-        if (zero.x > 0u)
-            lst += Coord(zero.x - 1u, zero.y)
-        if (zero.y > 0u)
-            lst += Coord(zero.x, zero.y - 1u)
+        if (zero.x < size - 1)
+            lst += Coord(zero.x + 1, zero.y)
+        if (zero.y < size - 1)
+            lst += Coord(zero.x, zero.y + 1)
+        if (zero.x > 0)
+            lst += Coord(zero.x - 1, zero.y)
+        if (zero.y > 0)
+            lst += Coord(zero.x, zero.y - 1)
         return lst
     }
 
@@ -65,7 +67,7 @@ class State(private val data: UIntArray, val size: UInt, val zero: Coord) {
     override fun toString(): String {
         val values = data.map { it.toString() }
         val len = values.map { it.length }.max() ?: 0
-        return values.windowed(size.toInt(), size.toInt()).joinToString("\n") { it.joinToString(" ") { it.padStart(len, ' ') } }
+        return values.windowed(size, size).joinToString("\n") { it.joinToString(" ") { it.padStart(len, ' ') } }
     }
 
 }
