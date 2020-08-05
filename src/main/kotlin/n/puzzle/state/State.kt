@@ -45,6 +45,10 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
         return Pair(new, _zero)
     }
 
+    fun isNatural(): Boolean {
+        return NaturalOrder[size].state == this
+    }
+
     fun neighbors(): List<Coord> {
         val lst = mutableListOf<Coord>()
         val zero = zero
