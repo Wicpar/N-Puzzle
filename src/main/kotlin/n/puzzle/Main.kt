@@ -13,7 +13,7 @@ fun File.checkAndExtract(): Pair<String, State?> {
 @ExperimentalUnsignedTypes
 @ExperimentalStdlibApi
 fun List<String>.checkAndExtract(): Pair<String, State?> {
-    val lines = this.filter { it.startsWith("#") }.map { it.split("#")[0] }.toMutableList()
+    val lines = this.filter { !it.startsWith("#") }.map { it.split("#")[0] }.toMutableList()
     val size =
         lines.removeFirst().toIntOrNull() ?: return "Invalid File: Error Invalid N-Puzzle size: Not An UInt" to null
 
