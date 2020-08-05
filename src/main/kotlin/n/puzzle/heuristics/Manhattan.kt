@@ -9,5 +9,5 @@ fun manhattanDst(a: Coord, b: Coord) = abs(a.x - b.x) + abs(a.y - b.y)
 
 @ExperimentalUnsignedTypes
 fun State.manhattan(pos: Coord, target: Coord, value: UInt): Double {
-    return abs(manhattanDst(zero, target) - manhattanDst(pos, target)).toDouble()
+    return manhattanDst(zero, target) - manhattanDst(pos, target).toDouble()
 }
