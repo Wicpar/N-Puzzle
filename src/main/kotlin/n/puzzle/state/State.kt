@@ -63,12 +63,12 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
         return lst
     }
 
-    inline fun <R : Comparable<R>> bestCoord(fn: State.(pos: Coord, target: Coord, value: UInt) -> R): Coord {
+    inline fun <R : Comparable<R>> bestCoord(crossinline fn: State.(pos: Coord, target: Coord, value: UInt) -> R): List<Coord> {
         val natural = NaturalOrder[size]
-        return neighbors().minBy {
+        return neighbors().sortedBy {
             val value = this[it]
             fn(it, natural.getNaturalIndex(value)!!, value)
-        }!! // 0 grids are impossible
+        } // 0 grids are impossible
     }
 
     override fun equals(other: Any?): Boolean {
