@@ -68,7 +68,7 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
         return neighbors().sortedBy {
             val value = this[it]
             fn(it, natural.getNaturalIndex(value)!!, value)
-        } // 0 grids are impossible
+        }
     }
 
     override fun equals(other: Any?): Boolean {
