@@ -8,7 +8,7 @@ class NaturalOrderTest {
 
     @ExperimentalUnsignedTypes
     @Test
-    fun getState() {
+    fun testOrder() {
         val res = """
              1  2  3  4
             12 13 14  5
@@ -18,5 +18,11 @@ class NaturalOrderTest {
 
         assertEquals(res, NaturalOrder(4).state.toString())
 
+    }
+
+    @ExperimentalUnsignedTypes
+    @Test
+    fun testEquals() {
+        assertEquals(NaturalOrder(4).state, NaturalOrder(4).state)
     }
 }

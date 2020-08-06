@@ -77,13 +77,11 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
 
         other as State
 
-        if (data != other.data) return false
-
-        return true
+        return data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int {
-        return data.hashCode()
+        return data.contentHashCode()
     }
 
     override fun toString(): String {
