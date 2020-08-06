@@ -13,7 +13,8 @@ fun File.checkAndExtract(): Pair<String, State?> {
 @ExperimentalUnsignedTypes
 @ExperimentalStdlibApi
 fun List<String>.checkAndExtract(): Pair<String, State?> {
-    val lines = this.filter { !it.startsWith("#") }.map { it.split("#")[0] }.toMutableList()
+    val lines = this.filter { !it.startsWith("#") }.map { it.split("#")[0] }.
+            map { it.trim().replace("""[ \t]{2,}""".toRegex()," ") }.toMutableList()
     val size =
         lines.removeFirst().toIntOrNull() ?: return "Invalid File: Error Invalid N-Puzzle size: Not An UInt" to null
 
@@ -22,8 +23,9 @@ fun List<String>.checkAndExtract(): Pair<String, State?> {
             .map { it.toUIntOrNull() ?: return "Invalid File: Error Invalid Element $it in N-Puzzle" to null }
     }.toUIntArray()
 
+    //System.out.println(finalArray.toSet().size)
     if (finalArray.toSet().size != (size * size))
-        return "Invalid File: Some Elements are duplicated" to null
+        return "Invalid File: Some Elements are duplicated or missing" to null
 
     val nbElem = (size * size).toUInt()
     if (finalArray.any { (it >= (nbElem)) || it < 0U })
