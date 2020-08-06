@@ -30,7 +30,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -69,7 +69,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -147,7 +147,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -185,7 +185,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -222,7 +222,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -259,7 +259,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -298,7 +298,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
@@ -336,7 +336,7 @@ class MainKtTest {
 
         val expectedState = State(expectedArray, 3)
         Assert.assertEquals("Valid", result.first)
-        //Assert.assertEquals(expectedState, result.second)
+        Assert.assertEquals(expectedState, result.second)
 
         System.out.println("ExpectedState:\n" + expectedState)
         System.out.println("ExpectedSize:\n" + expectedState.size)
