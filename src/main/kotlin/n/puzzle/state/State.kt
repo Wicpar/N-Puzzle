@@ -9,6 +9,8 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
 
     constructor(data: UIntArray, size: Int) : this(data, size, data.indexOf(0u).let { Coord(it % size, it / size) })
 
+    constructor(state: State) : this(state.data, state.size, state._zero)
+
     val zero: Coord
         get() {
             if (dirty) { recalculateZero() }
@@ -47,6 +49,10 @@ class State(private val data: UIntArray, val size: Int, private var _zero: Coord
 
     fun isNatural(): Boolean {
         return NaturalOrder[size].state == this
+    }
+
+    fun NaturalState() : State {
+        return NaturalOrder[size].state
     }
 
     fun neighbors(): List<Coord> {
