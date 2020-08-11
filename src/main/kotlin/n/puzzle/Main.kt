@@ -1,5 +1,7 @@
 package n.puzzle
 
+import n.puzzle.heuristics.Manhattan
+import n.puzzle.state.Solver
 import n.puzzle.state.State
 import java.io.File
 
@@ -44,8 +46,12 @@ fun main(args: Array<String>) {
         val file = File(arg)
         val extractedFile = file.checkAndExtract()
         if (extractedFile.first == "Valid") {
-
         }
     }
+    val arr = uintArrayOf(15u, 55u, 44u, 35u,  6u,  2u, 26u, 45u, 11u, 17u, 16u,  7u,  4u, 25u,  0u, 27u,  9u, 41u, 40u, 36u, 52u,  5u, 12u, 46u, 38u, 28u, 29u, 33u, 53u, 62u,  8u, 21u, 43u, 59u, 37u, 18u, 24u, 32u, 60u, 50u, 30u, 48u, 63u, 19u, 51u, 23u, 20u, 49u, 42u, 47u, 58u, 22u, 61u, 10u,  1u, 13u, 57u,  3u, 56u, 14u, 34u, 31u, 39u, 54u
+    )
+    val solver = Solver(State(arr, 8), Manhattan)
+
+    solver.AStarSolve()
 
 }

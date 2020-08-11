@@ -4,13 +4,13 @@ import n.puzzle.state.Coord
 import n.puzzle.state.State
 import kotlin.math.abs
 
+/**
+ * Real garbage, has to be changed to something more sensible
+ */
 @ExperimentalUnsignedTypes
-object Manhattan: Heuristic {
-
-    private fun manhattanDst(a: Coord, b: Coord) = abs(a.x - b.x) + abs(a.y - b.y)
+object Hamming: Heuristic {
 
     override fun heuristic(state: State, naturalOrder: NaturalOrder, pos: Coord, value: UInt): Double {
-        return manhattanDst(pos, naturalOrder.getNaturalIndex(value)!!).toDouble()
+        return abs(value.toDouble() - naturalOrder.state[pos].toDouble())
     }
 }
-

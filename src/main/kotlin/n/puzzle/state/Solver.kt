@@ -1,24 +1,33 @@
 package n.puzzle.state
 
-import n.puzzle.state.Search
+import n.puzzle.heuristics.Heuristic
+import n.puzzle.heuristics.absoluteHeuristic
 
-import n.puzzle.heuristics.manhattan
-import n.puzzle.heuristics.manhattanDst
+import java.util.*
+import kotlin.collections.HashMap
 
-class Solver(val startingState: State) {
+@ExperimentalUnsignedTypes
+@ExperimentalStdlibApi
+class Solver(val startingState: State, val heuristic: Heuristic) {
 
+    data class SolverCost(val heuristic: Double, val steps: Int): Comparable<SolverCost> {
 
-    private var openList = listOf<State>().toMutableList()
-    private var closedList = listOf<State>().toMutableList()
-    private var solved = false
+        override fun compareTo(other: SolverCost): Int {
+            return heuristic.compareTo(other.heuristic).let { if (it == 0) steps.compareTo(other.steps) else it }
+        }
+    }
 
+    private val computedStates = HashMap<State, Search>()
+    // ordonné en priorité par prix heuristique puis par cout
+    private val openPaths = TreeMap<SolverCost, LinkedList<Search>>()
+    private val bestPaths = LinkedList<Search>()
 
     fun AStarDisplaySolution(search: Search) {
         throw NotImplementedError("AStarDisplaySolution method Not implemented.")
     }
 
     fun AStarSolve() {
-        var search = Search(startingState)
+        val search = Search(startingState)
 
         if (AStartSearchManhattan(search)) {
             println("Success path found !!")
@@ -28,73 +37,80 @@ class Solver(val startingState: State) {
 
     }
 
-    fun AStartSearchManhattan(search : Search): Boolean {
+    private fun addComputedSearch(data: Pair<Search, Double>) {
+        val (search, value) = data
+        val steps = computedStates[search.state]?.steps ?: Int.MAX_VALUE
+        val newSteps = search.steps
+        val maxSteps = maxSteps()
+        // On élimine si c'est pire ou égal
+        if (newSteps < maxSteps && newSteps < steps) {
+            computedStates[search.state] = search
+            openPaths.getOrPut(SolverCost(value, newSteps)) { LinkedList() }.also {
+                it.add(search)
+            }
+        }
+    }
+
+    private fun getNextSearch(): Pair<Double, Search> {
+        return openPaths.firstEntry().let { (solverCost, value) ->
+            val (heuristicCost, cost) = solverCost
+            val ret = value.removeFirst()
+            if (value.isEmpty()) {
+                openPaths.remove(solverCost)
+            }
+            heuristicCost to ret
+        }
+    }
+
+    private fun maxSteps(): Int {
+        return bestPaths.firstOrNull()?.steps ?: Int.MAX_VALUE
+    }
+
+    fun AStartSearchManhattan(initial: Search): Boolean {
         println("Starting AStar")
-        openList.add(search.state)
+        addComputedSearch(initial to heuristic.absoluteHeuristic(initial.state))
         var i = 0
 
-        while (openList.size > 0 && !solved) {
-            i++
-            println("Iteration:" + i)
-            println("Coords = " + search.coords)
-            println("Grid = \n" + search.state)
-            println("Open list:")
-            for (state in openList) {
-                println(state)
-            }
-            println("Closed list:")
-            for (state in closedList) {
-                println(state)
-            }
+        val natural = initial.state.naturalOrder
 
-            if (i > 5)
-                return false
-            //Check if final destination reached
-            if (search.state.isNatural()) {
-                println("Is Solved")
-                solved = true
-            } else {
-                openList.remove(search.state)
-                closedList.add(search.state)
-                //Regarde les states possibles à atteindre depuis la position actuelle trié par ordre de pertinence
-                for (neighbor in search.currentState().neighbors()) {
-                    //prend un state qui n'a pas encore été exploré
-                    if (openList.none { it ==  search.anticipatedState(neighbor)  } &&
-                        closedList.none { it ==  search.anticipatedState(neighbor)  }) {
-                        //ajoute a la liste de recherche prioritaire
-                        openList.add(search.anticipatedState(neighbor))
-                        //ajoute au chemin en cours de création afin que search current state donne bien le state actuelle
-                        search.addToSolution(neighbor)
-                        break
-                    }/* else if (manhattanDst(neighbor, search.state.NaturalState().zero) >
-                            manhattanDst( search.state.zero, search.state.NaturalState().zero
-                        )
-                    ) {
-                        search.addToSolution(neighbor)
-                        search.state + neighbor
-                        if (closedList.any { it == (search.state + neighbor).first }) {
-                            closedList.remove((search.state + neighbor).first)
-                            openList.add((search.state + neighbor).first)
+        while (openPaths.isNotEmpty()) {
+            i++
+            val (value, search) = getNextSearch()
+//            if (i % 100000 == 0) {
+//                println("optimal Solutions: ${bestPaths.size}")
+//                println("Best Cost Solutions: ${maxSteps()}")
+//                println("Open Paths: " + openPaths.values.sumBy { it.size })
+//                println("Best Open Cost: ${openPaths.firstKey()}")
+//                println("Open States: " + computedStates.size)
+//                println("Best Value: $value")
+//                println(search.state)
+//            }
+            //Regarde les states possibles à atteindre, sans ordre prcis car il est géré lors de l'insertion
+            for ((next, step) in search.state.neighborsWithHeuristic(heuristic)) {
+                // calcule le nouveau search
+                val newSearch = search + next
+                //Check if final destination reached
+                if (newSearch.state == natural.state) {
+                    val maxSteps = maxSteps()
+                    val steps = newSearch.steps
+                    if (steps <= maxSteps) {
+                        if (steps < maxSteps) {
+                            bestPaths.clear()
+                            openPaths.entries.removeIf { it.key.steps <= steps}
+                            println("${openPaths.size} open path costs remaining")
                         }
-                        break
-                    }*/
+                        bestPaths.add(newSearch)
+                    }
+                } else {
+                    // réinserre le search avec la nouvelle valeur heuristique (on ajoute car on minimise)
+                    addComputedSearch(newSearch to value + step)
                 }
             }
-            println("Search Coords = " + search.coords)
         }
-        println("End of A*")
-        println("Coords = " + search.coords)
-        println("Grid = \n" + search.state)
-        println("Open list:")
-        for (state in openList) {
-            println(state)
-        }
-        println("Closed list:")
-        for (state in closedList) {
-            println(state)
-        }
-
-        return solved
+        println("$i iterations")
+        println("Found ${bestPaths.size} optimal solutions with ${maxSteps()} cost")
+        println(bestPaths)
+        return bestPaths.isNotEmpty()
     }
 
 
