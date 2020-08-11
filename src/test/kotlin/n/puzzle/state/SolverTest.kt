@@ -569,67 +569,67 @@ class SolverTest {
 //
 //        solver.AStarSolve()
 //    }
-
-    @ExperimentalStdlibApi
-    @ExperimentalUnsignedTypes
-    @Test
-    fun testAStartSearchHammingSize7() {
-
-        val arr = uintArrayOf(
-            40u,
-            21u,
-            8u,
-            9u,
-            2u,
-            6u,
-            38u,
-            14u,
-            3u,
-            1u,
-            24u,
-            26u,
-            37u,
-            19u,
-            41u,
-            36u,
-            42u,
-            10u,
-            32u,
-            43u,
-            30u,
-            27u,
-            31u,
-            12u,
-            34u,
-            44u,
-            5u,
-            22u,
-            11u,
-            15u,
-            35u,
-            25u,
-            18u,
-            28u,
-            16u,
-            23u,
-            46u,
-            20u,
-            4u,
-            13u,
-            0u,
-            48u,
-            17u,
-            39u,
-            45u,
-            33u,
-            47u,
-            7u,
-            29u
-        )
-        val solver = Solver(State(arr, 7), Manhattan + Hamming * (0.001))
-
-        solver.AStarSolve()
-    }
+//
+//    @ExperimentalStdlibApi
+//    @ExperimentalUnsignedTypes
+//    @Test
+//    fun testAStartSearchHammingSize7() {
+//
+//        val arr = uintArrayOf(
+//            40u,
+//            21u,
+//            8u,
+//            9u,
+//            2u,
+//            6u,
+//            38u,
+//            14u,
+//            3u,
+//            1u,
+//            24u,
+//            26u,
+//            37u,
+//            19u,
+//            41u,
+//            36u,
+//            42u,
+//            10u,
+//            32u,
+//            43u,
+//            30u,
+//            27u,
+//            31u,
+//            12u,
+//            34u,
+//            44u,
+//            5u,
+//            22u,
+//            11u,
+//            15u,
+//            35u,
+//            25u,
+//            18u,
+//            28u,
+//            16u,
+//            23u,
+//            46u,
+//            20u,
+//            4u,
+//            13u,
+//            0u,
+//            48u,
+//            17u,
+//            39u,
+//            45u,
+//            33u,
+//            47u,
+//            7u,
+//            29u
+//        )
+//        val solver = Solver(State(arr, 7), Manhattan + Hamming * (0.001))
+//
+//        solver.AStarSolve()
+//    }
 //
 //    @ExperimentalStdlibApi
 //    @ExperimentalUnsignedTypes

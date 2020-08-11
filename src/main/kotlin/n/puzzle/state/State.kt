@@ -3,7 +3,6 @@ package n.puzzle.state
 import n.puzzle.heuristics.Heuristic
 import n.puzzle.heuristics.NaturalOrder
 import n.puzzle.heuristics.getCoordHeuristicValue
-import org.omg.CORBA.Object
 
 @ExperimentalUnsignedTypes
 class State private constructor(data: Any, val size: Int, private var _zero: Coord) {
