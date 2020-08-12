@@ -13,11 +13,12 @@ class Solver(val startingState: State, val heuristic: Heuristic) {
     data class SolverCost(val heuristic: Double, val steps: Int): Comparable<SolverCost> {
 
         override fun compareTo(other: SolverCost): Int {
-            return heuristic.compareTo(other.heuristic).let { if (it == 0) steps.compareTo(other.steps) else it }
+            return (heuristic + steps).compareTo(other.heuristic + other.steps)
+//            return heuristic.compareTo(other.heuristic).let { if (it == 0) steps.compareTo(other.steps) else it }
         }
     }
 
-    private val computedStates = HashMap<State, Search>()
+    private val computedStates = HashMap<State, Int>()
     // ordonné en priorité par prix heuristique puis par cout
     private val openPaths = TreeMap<SolverCost, LinkedList<Search>>()
     private val bestPaths = LinkedList<Search>()
@@ -39,12 +40,12 @@ class Solver(val startingState: State, val heuristic: Heuristic) {
 
     private fun addComputedSearch(data: Pair<Search, Double>) {
         val (search, value) = data
-        val steps = computedStates[search.state]?.steps ?: Int.MAX_VALUE
+        val steps = computedStates[search.state] ?: Int.MAX_VALUE
         val newSteps = search.steps
         val maxSteps = maxSteps()
         // On élimine si c'est pire ou égal
         if (newSteps < maxSteps && newSteps < steps) {
-            computedStates[search.state] = search
+            computedStates[search.state] = newSteps
             openPaths.getOrPut(SolverCost(value, newSteps)) { LinkedList() }.also {
                 it.add(search)
             }
@@ -76,15 +77,15 @@ class Solver(val startingState: State, val heuristic: Heuristic) {
         while (openPaths.isNotEmpty()) {
             i++
             val (value, search) = getNextSearch()
-//            if (i % 100000 == 0) {
-//                println("optimal Solutions: ${bestPaths.size}")
-//                println("Best Cost Solutions: ${maxSteps()}")
-//                println("Open Paths: " + openPaths.values.sumBy { it.size })
-//                println("Best Open Cost: ${openPaths.firstKey()}")
-//                println("Open States: " + computedStates.size)
-//                println("Best Value: $value")
-//                println(search.state)
-//            }
+            if (i % 1000000 == 0) {
+                println("optimal Solutions: ${bestPaths.size}")
+                println("Best Cost Solutions: ${maxSteps()}")
+                println("Open Paths: " + openPaths.values.sumBy { it.size })
+                println("Best Open Cost: ${openPaths.firstKey()}")
+                println("Open States: " + computedStates.size)
+                println("Best Value: $value")
+                println(search.state)
+            }
             //Regarde les states possibles à atteindre, sans ordre prcis car il est géré lors de l'insertion
             for ((next, step) in search.state.neighborsWithHeuristic(heuristic)) {
                 // calcule le nouveau search
@@ -96,8 +97,8 @@ class Solver(val startingState: State, val heuristic: Heuristic) {
                     if (steps <= maxSteps) {
                         if (steps < maxSteps) {
                             bestPaths.clear()
-                            openPaths.entries.removeIf { it.key.steps <= steps}
-                            println("${openPaths.size} open path costs remaining")
+                            openPaths.entries.removeIf { it.key.steps >= steps}
+                            println("${openPaths.values.sumBy { it.size }} open path costs remaining")
                         }
                         bestPaths.add(newSearch)
                     }
