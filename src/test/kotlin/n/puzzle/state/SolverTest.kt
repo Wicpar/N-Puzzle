@@ -23,7 +23,8 @@ class SolverTest {
     @ExperimentalUnsignedTypes
     @Test
     fun testAStartSearchManhattanSize4() {
-
+        //1858690 -> 23s660ms
+        //1051405 -> 30s581s
         val arr = uintArrayOf(
             7u, 3u, 15u, 14u, 13u, 10u, 11u, 8u, 9u, 1u, 5u, 0u, 6u, 12u, 2u, 4u
         )
